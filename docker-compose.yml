@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  pisignage_app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        VERSION: "2.5.4"
+        PORT: 3000
+    image: pisignage:2.5.4
+    container_name: pisignage_app
+    depends_on:
+      - pisignage_mongo
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://pisignage_mongo:27017/pisignage-server
+      NODE_ENV: docker
+    volumes:
+      - "${PWD}/pisignage_media:/media"
+
+  pisignage_mongo:
+    image: mongo:3.4
+    container_name: pisignage_mongo
+    expose:
+      - 27017
+    restart: unless-stopped
+    volumes:
+      - ${PWD}/pisignage_mongodb:/data/db
